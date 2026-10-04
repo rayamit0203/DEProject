@@ -31,7 +31,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from @{pipeline().parameters.schema}.@{pipeline().parameters.table}\nwhere @{pipeline().parameters.cdc_col} > '@{activity('Last_cdc').output.value[0].cdc}'",
+							"value": "select * from @{pipeline().parameters.schema}.@{pipeline().parameters.table}\nwhere @{pipeline().parameters.cdc_col} > '@{if(empty(pipeline().parameters.from_date), activity('Last_cdc').output.value[0].cdc, pipeline().parameters.from_date)}'",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -192,7 +192,14 @@
 						{
 							"name": "update_last_cdc_Watermark",
 							"type": "Copy",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "max_cdc",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -297,6 +304,9 @@
 				"type": "string"
 			},
 			"cdc_col": {
+				"type": "string"
+			},
+			"from_date": {
 				"type": "string"
 			}
 		},
