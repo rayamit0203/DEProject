@@ -343,7 +343,7 @@
 						"type": "Expression"
 					},
 					"body": {
-						"value": "{\n    \"pipeline_name\" : @{pipeline().Pipeline},\n    \"pipeline_runID\" : @{pipeline().RunId}\n}",
+						"value": "{\n    \"pipeline_name\" : \"@{pipeline().Pipeline}\",\n    \"pipeline_runID\" : \"@{pipeline().RunId}\"\n}",
 						"type": "Expression"
 					}
 				}
